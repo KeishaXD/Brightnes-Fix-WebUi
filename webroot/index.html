@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KeishaXD Brightness Control</title>
+  <title>Brightness Fix WebUI</title>
   <style>
     body {
       margin: 0;
@@ -33,11 +33,28 @@
     main {
       padding: 1rem;
     }
-    .device-info {
-      background-color: #1e1e1e;
+    .status-box, .info-box {
+      background-color: #2e2e2e;
       padding: 1rem;
       border-radius: 8px;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status-text {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    .status-logo {
+      width: 64px;       /* display size */
+      height: 64px;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .module-text {
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
     .slider-container {
       background-color: #1e1e1e;
@@ -63,11 +80,6 @@
     button:hover {
       background-color: #45a049;
     }
-    pre {
-      white-space: pre-wrap;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
   </style>
 </head>
 <body>
@@ -76,11 +88,17 @@
   </header>
 
   <main>
-    <section class="device-info">
-      <h2>MyBrightnessModule</h2>
-      <p>Author: KeishaXD</p>
-      <pre id="device_info">Memuat info perangkat...</pre>
-    </section>
+    <div class="status-box">
+      <span id="status_text" class="status-text">Checking status...</span>
+      <img id="status_logo" src="logo_work.png" alt="logo" class="status-logo" />
+    </div>
+
+    <div class="info-box">
+      <div class="module-text">
+        <strong>Brightness Fix WebUI</strong><br>
+        Author: KeishaXD
+      </div>
+    </div>
 
     <section class="slider-container">
       <label for="brightness_slider">Brightness: <span id="brightness_value">50</span>%</label>
@@ -95,17 +113,34 @@
   <script>
     const slider = document.getElementById("brightness_slider");
     const valueDisplay = document.getElementById("brightness_value");
-    const deviceInfo = document.getElementById("device_info");
+    const statusText = document.getElementById("status_text");
+    const statusLogo = document.getElementById("status_logo");
 
     slider.addEventListener("input", () => {
       valueDisplay.textContent = slider.value;
       fetch(`/cgi-bin/brightness.cgi?value=${slider.value}`);
     });
 
-    fetch("/cgi-bin/deviceinfo.cgi")
-      .then(response => response.text())
-      .then(text => deviceInfo.textContent = text)
-      .catch(err => deviceInfo.textContent = "Gagal memuat info perangkat.");
+    fetch("/cgi-bin/status.cgi")
+      .then(res => res.text())
+      .then(text => {
+        if (text.trim() === "1") {
+          statusText.textContent = "Working ✨";
+          statusText.style.color = "#00e676";
+          statusLogo.src = "logo_work.png";
+        } else {
+          statusText.textContent = "Not working 🙁";
+          statusText.style.color = "#ff5252";
+          statusLogo.src = "logo_fail.png";
+        }
+      })
+      .catch(() => {
+        statusText.textContent = "Not working 🙁";
+        statusText.style.color = "#ff5252";
+        statusLogo.src = "logo_fail.png";
+      });
+
+    valueDisplay.textContent = slider.value;
   </script>
 </body>
 </html>
