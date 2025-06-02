@@ -1,51 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <script type="module" crossorigin src="/assets/index-DNMVv9Lm.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BAamNg16.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeishaXD Brightness Control</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 1rem;
+      background-color: #1e1e1e;
+    }
+    .exit-btn {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .exit-btn:hover {
+      background-color: #c62828;
+    }
+    main {
+      padding: 1rem;
+    }
+    .device-info {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .slider-container {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
 </head>
-<body class="bg-surface flex justify-center min-h-screen root_layout">
-    <main class="p-3 text-sm w-full max-w-2xl">
-        <div class="flex justify-between items-center mb-6 text-on-surface">
-            <h1 class="text-lg font-semibold">Settings</h1>
-            <div>
-                <select id="languageSelector" class="select select-sm bg-surface-container text-on-surface">
-                    <option value="en">English</option>
-                    <option value="id">Indonesia</option>
-                </select>
-            </div>
-        </div>
-        <div class="bg-secondary-container mb-4 p-4 rounded-lg flex items-start justify-between text-on-secondary-container">
-            <div>
-                <span id="daemon_status" class="text-lg font-semibold">Loading</span>
-                <span id="daemon_pid" class="text-xs mt-3 block">One moment please...</span>
-            </div>
-            <img id="encore_logo" class="w-24 h-24">
-        </div>
-        <div class="bg-surface-container mb-4 p-4 rounded-lg text-on-surface">
-            <div class="py-2">
-                <h3 data-i18n="moduleTitle" class="text-sm font-medium mb-1"></h3>
-                <span id="module_version" class="text-on-surface-variant text-xs"></span>
-            </div>
-            <div class="py-2">
-                <h3 data-i18n="profileTitle" class="text-sm font-medium mb-1"></h3>
-                <span id="encore_profile" class="text-on-surface-variant text-xs"></span>
-            </div>
-            <div class="py-2">
-                <h3 data-i18n="kernelTitle" class="text-sm font-medium mb-1"></h3>
-                <span id="kernel_version" class="text-on-surface-variant text-xs"></span>
-            </div>
-            <div class="py-2">
-                <h3 data-i18n="chipsetTitle" class="text-sm font-medium mb-1"></h3>
-                <span id="chipset_name" class="text-on-surface-variant text-xs"></span>
-            </div>
-            <div class="py-2">
-                <h3 data-i18n="androidSDKTitle" class="text-sm font-medium mb-1"></h3>
-                <span id="android_sdk" class="text-on-surface-variant text-xs"></span>
-            </div>
-        </div>
-    </main>
+<body>
+  <header>
+    <button class="exit-btn" onclick="window.close()">⬅ Keluar</button>
+  </header>
+
+  <main>
+    <section class="device-info">
+      <h2>MyBrightnessModule</h2>
+      <p>Author: KeishaXD</p>
+      <pre id="device_info">Memuat info perangkat...</pre>
+    </section>
+
+    <section class="slider-container">
+      <label for="brightness_slider">Brightness: <span id="brightness_value">50</span>%</label>
+      <input id="brightness_slider" type="range" min="1" max="100" value="50">
+    </section>
+
+    <div class="footer">
+      <button onclick="alert('KeishaXD - Developer of this module')">Tentang Saya</button>
+    </div>
+  </main>
+
+  <script>
+    const slider = document.getElementById("brightness_slider");
+    const valueDisplay = document.getElementById("brightness_value");
+    const deviceInfo = document.getElementById("device_info");
+
+    slider.addEventListener("input", () => {
+      valueDisplay.textContent = slider.value;
+      fetch(`/cgi-bin/brightness.cgi?value=${slider.value}`);
+    });
+
+    fetch("/cgi-bin/deviceinfo.cgi")
+      .then(response => response.text())
+      .then(text => deviceInfo.textContent = text)
+      .catch(err => deviceInfo.textContent = "Gagal memuat info perangkat.");
+  </script>
 </body>
 </html>
