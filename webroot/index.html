@@ -1,12 +1,29 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>MyWebUIModule</title>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/assets/index.css" />
+  <script type="module" src="/assets/index.js"></script>
 </head>
-<body>
-    <h1>Welcome to My WebUI Module</h1>
-    <p>This is a placeholder WebUI. Customize as needed.</p>
-    <button onclick="alert('Feature toggled!')">Toggle Feature</button>
+<body class="bg-surface flex justify-center min-h-screen root_layout">
+  <main class="p-3 text-sm w-full max-w-2xl">
+    <div class="bg-surface-container mb-4 p-4 rounded-lg text-on-surface">
+      <h2 class="text-base font-semibold mb-2">Brightness Control</h2>
+      <input id="brightness_slider" type="range" min="0" max="255" value="128" class="w-full">
+      <p class="mt-2 text-on-surface-variant">Nilai: <span id="value">128</span></p>
+    </div>
+  </main>
+
+  <script>
+    const slider = document.getElementById("brightness_slider");
+    const val = document.getElementById("value");
+
+    slider.addEventListener("input", () => {
+      val.textContent = slider.value;
+      // Kirim ke backend via fetch/CGI jika diperlukan nanti
+      fetch(`/cgi-bin/brightness.cgi?value=${slider.value}`);
+    });
+  </script>
 </body>
 </html>
